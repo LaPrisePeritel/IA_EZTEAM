@@ -5,43 +5,68 @@ using DoNotModify;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
 
 namespace EnterpriseTeam {
 
-	public class ShipController : BaseSpaceShipController
+    public struct EnemyMoveData
     {
-        private Vector2 targetPoint;
+        public float rotation;
+        public float thrust;
 
+        public EnemyMoveData(float rot, float thr)
+        {
+            rotation = rot;
+            thrust = thr;
+        }
+    }
+
+    public class ShipController : BaseSpaceShipController
+    {
         public float rotation { get; set; }
-        public uint thrust { get; set; }
+        public float thrust { get; set; }
 
 
         public SpaceShipView view { get; private set; }
-        public GameData Data { get; private set; }
+		public SpaceShipView OtherSpaceship { get; private set; } 
+		public GameData Data { get; private set; }
 
-		private BehaviorTree behaviorTree;
+		public BehaviorTree behaviorTree { get; private set; }
 		private bool needFire;
-		public override void Initialize(SpaceShipView spaceship, GameData data)
+		private bool needShockwave;
+
+        public Dictionary<int, EnemyMoveData> enemyMoveData { get; set; }
+        public int lastIndex { get; set; }
+        public int firstIndex { get; set; }
+        public override void Initialize(SpaceShipView spaceship, GameData data)
         {
-            view = spaceship;
+			view = spaceship;
             Data = data;
+			OtherSpaceship = data.GetSpaceShipForOwner(1 - view.Owner); ;
 			behaviorTree = GetComponent<BehaviorTree>();
-		}
+            enemyMoveData = new Dictionary<int, EnemyMoveData>();
+            lastIndex = 0;
+            firstIndex = 0;
+        }
 
-		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
+        public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
-            SpaceShipView otherSpaceship = data.GetSpaceShipForOwner(1 - spaceship.Owner);
-			UpdateBlackboard(spaceship, data);
-			float thrust = 1.0f;
+            //Secure to forbid memory leak and memory overflow
+            if (enemyMoveData.Count > 10000)
+            {
+                enemyMoveData.Remove(enemyMoveData.ElementAt(0).Key);
+                firstIndex++;
+            }
+
+            UpdateBlackboard();
             float targetOrient = rotation;
-			return new InputData(thrust, targetOrient, needFire, false, false);
+			return new InputData(thrust, targetOrient, needFire, false, needShockwave);
 		}
 
-		public void UpdateBlackboard(SpaceShipView spaceship, GameData data)
+		public void UpdateBlackboard()
 		{
-			SpaceShipView otherSpaceship = data.GetSpaceShipForOwner(1 - spaceship.Owner);
 			//SET VARIABLE SHOOT
-			if(AimingHelpers.CanHit(spaceship, otherSpaceship.Position, 15.0f))
+			if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
 				behaviorTree.SetVariableValue("CanHit", true);
             else
 			{
@@ -53,6 +78,10 @@ namespace EnterpriseTeam {
 		public void Fire()
         {
 			needFire = true;
+		}
+		public void Shockwave(bool CanShockwave)
+		{
+			needShockwave = CanShockwave;
 		}
 
 		public void GoToNearNeutralWaypoint(float angle)
