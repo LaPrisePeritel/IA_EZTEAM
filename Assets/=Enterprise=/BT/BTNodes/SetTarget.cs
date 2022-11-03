@@ -31,12 +31,28 @@ namespace EnterpriseTeam
 
         public override TaskStatus OnUpdate()
         {
-            float dx = _target.Position.x - ship.Position.y;
-            float dy = _target.Position.y - ship.Position.y;
+            Vector3 pos = _target.Position - _target.LookAt * (float)tree.GetVariable("DistanceBehind").GetValue();
+            /*
+            if (ship.Owner == 0)
+            {
+                Debug.DrawLine(ship.Position, ship.Position * -2, Color.red);
+                Debug.DrawLine(_target.Position, _target.Position - _target.LookAt * 1.25f, Color.green);
+            }
+            */
+            float dx = pos.x - ship.Position.y;
+            float dy = pos.y - ship.Position.y;
             float angle = Mathf.Atan2(dy, dx) * 180 / Mathf.PI;
             controller.rotation = angle;
-            Debug.Log(angle);
-            //tree.SetVariable("Target", _target);
+
+            
+            Vector2 shipVec = (ship.Position - ship.LookAt);
+            Vector2 targetVec = (_target.Position - _target.LookAt);
+
+            float back = Vector2.Distance(ship.Position - ship.LookAt, _target.Position);
+            float front = Vector2.Distance(ship.Position + ship.LookAt, _target.Position);
+            if (back < front) controller.thrust = 0;
+            else if (back > front) controller.thrust = 1; 
+
             return TaskStatus.Success;
         }
     }
