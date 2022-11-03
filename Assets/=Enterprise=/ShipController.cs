@@ -54,6 +54,11 @@ namespace EnterpriseTeam {
         {
 			needFire = true;
 		}
+
+		public void GoToNearNeutralWaypoint(float angle)
+        {
+			rotation = angle;
+        }
 	}
 
 }
