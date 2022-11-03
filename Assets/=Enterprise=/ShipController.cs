@@ -83,6 +83,11 @@ namespace EnterpriseTeam {
 		{
 			needShockwave = CanShockwave;
 		}
+
+		public void GoToNearNeutralWaypoint(float angle)
+        {
+			rotation = angle;
+        }
 	}
 
 }

@@ -809,7 +809,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 8544637534821932126}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8544637534821932127}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21f500a2d65267a4b98f696cc0d73c15, type: 3}
@@ -2964,52 +2964,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ddec9c444f5700247bafd0707e3dfc93, type: 3}
---- !u!1 &8544637534821932127 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8544637535006246790, guid: ddec9c444f5700247bafd0707e3dfc93,
-    type: 3}
-  m_PrefabInstance: {fileID: 8544637534821932126}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8544637534821932128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8544637534821932127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startWhenEnabled: 1
-  asynchronousLoad: 0
-  pauseWhenDisabled: 0
-  restartWhenComplete: 0
-  logTaskChanges: 0
-  group: 0
-  resetValuesOnRestart: 0
-  externalBehavior: {fileID: 0}
-  mBehaviorSource:
-    behaviorName: Behavior
-    behaviorDescription: 
-    mTaskData:
-      types: []
-      parentIndex: 
-      startIndex: 
-      variableStartIndex: 
-      JSONSerialization: '{}'
-      fieldSerializationData:
-        typeName: []
-        fieldNameHash: 
-        startIndex: 
-        dataPosition: 
-        unityObjects: []
-        byteData: 
-        byteDataArray: 
-      Version: 1.7.1
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
 --- !u!1001 &9075386313206793690
 PrefabInstance:
   m_ObjectHideFlags: 0
