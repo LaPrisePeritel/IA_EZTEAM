@@ -17,31 +17,32 @@ namespace EnterpriseTeam {
 
 
         public SpaceShipView view { get; private set; }
-        public GameData Data { get; private set; }
+		public SpaceShipView OtherSpaceship { get; private set; } 
+		public GameData Data { get; private set; }
 
-		private BehaviorTree behaviorTree;
+		public BehaviorTree behaviorTree { get; private set; }
 		private bool needFire;
+		private bool needShockwave;
 		public override void Initialize(SpaceShipView spaceship, GameData data)
         {
-            view = spaceship;
+			view = spaceship;
             Data = data;
+			OtherSpaceship = data.GetSpaceShipForOwner(1 - view.Owner); ;
 			behaviorTree = GetComponent<BehaviorTree>();
 		}
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
-            SpaceShipView otherSpaceship = data.GetSpaceShipForOwner(1 - spaceship.Owner);
-			UpdateBlackboard(spaceship, data);
+			UpdateBlackboard();
 			float thrust = 1.0f;
             float targetOrient = rotation;
-			return new InputData(thrust, targetOrient, needFire, false, false);
+			return new InputData(thrust, targetOrient, needFire, false, needShockwave);
 		}
 
-		public void UpdateBlackboard(SpaceShipView spaceship, GameData data)
+		public void UpdateBlackboard()
 		{
-			SpaceShipView otherSpaceship = data.GetSpaceShipForOwner(1 - spaceship.Owner);
 			//SET VARIABLE SHOOT
-			if(AimingHelpers.CanHit(spaceship, otherSpaceship.Position, 15.0f))
+			if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
 				behaviorTree.SetVariableValue("CanHit", true);
             else
 			{
@@ -53,6 +54,10 @@ namespace EnterpriseTeam {
 		public void Fire()
         {
 			needFire = true;
+		}
+		public void Shockwave(bool CanShockwave)
+		{
+			needShockwave = CanShockwave;
 		}
 	}
 
