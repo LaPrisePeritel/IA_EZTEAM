@@ -3,6 +3,7 @@ using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime.Tasks.Unity.UnityGameObject;
 using DoNotModify;
 using UnityEngine;
+using System.Linq;
 using static UnityEngine.GraphicsBuffer;
 
 namespace EnterpriseTeam
@@ -20,6 +21,8 @@ namespace EnterpriseTeam
 
         private ShipController controller;
 
+        private float distBehind;
+
         public override void OnAwake()
         {
             tree = GetComponent<BehaviorTree>();
@@ -27,31 +30,28 @@ namespace EnterpriseTeam
             ship = controller.view;
             data = controller.Data;
             _target = data.GetSpaceShipForOwner(1 - ship.Owner);
+            distBehind = (float)tree.GetVariable("DistanceBehind").GetValue();
         }
 
         public override TaskStatus OnUpdate()
         {
-            Vector3 pos = _target.Position - _target.LookAt * (float)tree.GetVariable("DistanceBehind").GetValue();
-            /*
-            if (ship.Owner == 0)
-            {
-                Debug.DrawLine(ship.Position, ship.Position * -2, Color.red);
-                Debug.DrawLine(_target.Position, _target.Position - _target.LookAt * 1.25f, Color.green);
-            }
-            */
+            //Rotation towards enemy
+            Vector3 pos = _target.Position - _target.LookAt * distBehind;
             float dx = pos.x - ship.Position.y;
             float dy = pos.y - ship.Position.y;
             float angle = Mathf.Atan2(dy, dx) * 180 / Mathf.PI;
             controller.rotation = angle;
 
             
-            Vector2 shipVec = (ship.Position - ship.LookAt);
-            Vector2 targetVec = (_target.Position - _target.LookAt);
-
+            //Detection of enemy position: If behind us, stop thrusters to rotate
             float back = Vector2.Distance(ship.Position - ship.LookAt, _target.Position);
             float front = Vector2.Distance(ship.Position + ship.LookAt, _target.Position);
             if (back < front) controller.thrust = 0;
             else if (back > front) controller.thrust = 1; 
+
+            controller.enemyMoveData.Add(controller.lastIndex, new EnemyMoveData(_target.Orientation, _target.Thrust));
+            controller.lastIndex++;
+
 
             return TaskStatus.Success;
         }
