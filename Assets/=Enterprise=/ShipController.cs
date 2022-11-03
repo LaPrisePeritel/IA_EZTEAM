@@ -5,15 +5,26 @@ using DoNotModify;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
 
 namespace EnterpriseTeam {
 
-	public class ShipController : BaseSpaceShipController
+    public struct EnemyMoveData
     {
-        private Vector2 targetPoint;
+        public float rotation;
+        public float thrust;
 
+        public EnemyMoveData(float rot, float thr)
+        {
+            rotation = rot;
+            thrust = thr;
+        }
+    }
+
+    public class ShipController : BaseSpaceShipController
+    {
         public float rotation { get; set; }
-        public uint thrust { get; set; }
+        public int thrust { get; set; }
 
 
         public SpaceShipView view { get; private set; }
@@ -23,18 +34,31 @@ namespace EnterpriseTeam {
 		public BehaviorTree behaviorTree { get; private set; }
 		private bool needFire;
 		private bool needShockwave;
-		public override void Initialize(SpaceShipView spaceship, GameData data)
+
+        public Dictionary<int, EnemyMoveData> enemyMoveData { get; set; }
+        public int lastIndex { get; set; }
+        public int firstIndex { get; set; }
+        public override void Initialize(SpaceShipView spaceship, GameData data)
         {
 			view = spaceship;
             Data = data;
 			OtherSpaceship = data.GetSpaceShipForOwner(1 - view.Owner); ;
 			behaviorTree = GetComponent<BehaviorTree>();
-		}
+            enemyMoveData = new Dictionary<int, EnemyMoveData>();
+            lastIndex = 0;
+            firstIndex = 0;
+        }
 
-		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
+        public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
-			UpdateBlackboard();
-			float thrust = 1.0f;
+            //Secure to forbid memory leak and memory overflow
+            if (enemyMoveData.Count > 10000)
+            {
+                enemyMoveData.Remove(enemyMoveData.ElementAt(0).Key);
+                firstIndex++;
+            }
+
+            UpdateBlackboard();
             float targetOrient = rotation;
 			return new InputData(thrust, targetOrient, needFire, false, needShockwave);
 		}
