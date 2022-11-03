@@ -24,7 +24,7 @@ namespace EnterpriseTeam {
     public class ShipController : BaseSpaceShipController
     {
         public float rotation { get; set; }
-        public int thrust { get; set; }
+        public float thrust { get; set; }
 
 
         public SpaceShipView view { get; private set; }
