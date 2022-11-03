@@ -34,7 +34,6 @@ namespace EnterpriseTeam {
 			UpdateBlackboard(spaceship, data);
 			float thrust = 1.0f;
             float targetOrient = rotation;
-			bool needShoot = AimingHelpers.CanHit(spaceship, otherSpaceship.Position, otherSpaceship.Velocity, 0.15f);
 			return new InputData(thrust, targetOrient, needFire, false, false);
 		}
 
@@ -42,8 +41,14 @@ namespace EnterpriseTeam {
 		{
 			SpaceShipView otherSpaceship = data.GetSpaceShipForOwner(1 - spaceship.Owner);
 			//SET VARIABLE SHOOT
-			behaviorTree.SetVariableValue("CanHit", AimingHelpers.CanHit(spaceship, otherSpaceship.Position, 180.0f));	
-        }
+			if(AimingHelpers.CanHit(spaceship, otherSpaceship.Position, 15.0f))
+				behaviorTree.SetVariableValue("CanHit", true);
+            else
+			{
+				behaviorTree.SetVariableValue("CanHit", false);
+				needFire = false;
+			}
+		}
 
 		public void Fire()
         {
