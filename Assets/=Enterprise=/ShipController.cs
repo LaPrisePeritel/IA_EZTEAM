@@ -72,6 +72,12 @@ namespace EnterpriseTeam
                 needShockwave = false;
             }
             //SET VARIABLE SHOOT
+            for (int i = 0; i < Data.Mines.Count; i++)
+            {
+                if (AimingHelpers.CanHit(view, Data.Mines[i].Position, 1) && Vector2.Distance(view.Position, Data.Mines[i].Position) < (float)behaviorTree.GetVariable("MineShootDist").GetValue())
+                    behaviorTree.SetVariableValue("CanHit", true);
+            }
+
             if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
                 behaviorTree.SetVariableValue("CanHit", true);
             else
