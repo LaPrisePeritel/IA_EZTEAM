@@ -2,6 +2,7 @@ using BehaviorDesigner.Runtime.Tasks;
 using DoNotModify;
 using System.Collections.Generic;
 using UnityEngine;
+using IIM;
 
 namespace EnterpriseTeam
 {
@@ -12,6 +13,7 @@ namespace EnterpriseTeam
         private GameData data;
 
         private WayPointView nearestWaypoint = null;
+
         public override void OnAwake()
         {
             self = gameObject.GetComponent<ShipController>();
@@ -49,9 +51,10 @@ namespace EnterpriseTeam
         {
             if (Vector2.Distance(nearestWaypoint.Position, self.view.Position) > nearestWaypoint.Radius)
             {
-                float dx = nearestWaypoint.Position.x - self.view.Position.y;
+                /*float dx = nearestWaypoint.Position.x - self.view.Position.x;
                 float dy = nearestWaypoint.Position.y - self.view.Position.y;
-                float angle = Mathf.Atan2(dy, dx) * 180 / Mathf.PI;
+                float angle = Mathf.Atan2(dy, dx) * 180 / Mathf.PI;*/
+                float angle = AimingHelpers.ComputeSteeringOrient(self.view, nearestWaypoint.Position);
 
                 self.GoToNearNeutralWaypoint(angle);
                 return TaskStatus.Running;
