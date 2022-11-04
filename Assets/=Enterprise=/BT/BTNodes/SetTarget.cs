@@ -37,7 +37,7 @@ namespace EnterpriseTeam
         {
             //Rotation towards enemy
             Vector3 pos = _target.Position - _target.LookAt * distBehind;
-            float dx = pos.x - ship.Position.y;
+            float dx = pos.x - ship.Position.x;
             float dy = pos.y - ship.Position.y;
             float angle = Mathf.Atan2(dy, dx) * 180 / Mathf.PI;
             controller.rotation = angle;
