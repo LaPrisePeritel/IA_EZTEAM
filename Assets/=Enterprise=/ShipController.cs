@@ -65,6 +65,11 @@ namespace EnterpriseTeam
 
         public void UpdateBlackboard()
         {
+            behaviorTree.SetVariableValue("DistanceBetweenShips", Vector2.Distance(view.Position, OtherSpaceship.Position));
+            if (Vector2.Distance(view.Position, OtherSpaceship.Position) >= (float)behaviorTree.GetVariable("DistanceMinShockwave").GetValue())
+            {
+                needShockwave = false;
+            }
             //SET VARIABLE SHOOT
             if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
                 behaviorTree.SetVariableValue("CanHit", true);
@@ -80,9 +85,9 @@ namespace EnterpriseTeam
             needFire = true;
         }
 
-        public void Shockwave(bool CanShockwave)
+        public void Shockwave()
         {
-            needShockwave = CanShockwave;
+            needShockwave = true;
         }
 
         public void GoToNearNeutralWaypoint(float angle)
