@@ -70,6 +70,7 @@ namespace EnterpriseTeam
             {
                 needShockwave = false;
             }
+            behaviorTree.SetVariableValue("EnergyCurrent", view.Energy);
             //SET VARIABLE SHOOT
             if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
                 behaviorTree.SetVariableValue("CanHit", true);
