@@ -33,6 +33,7 @@ namespace EnterpriseTeam
         public BehaviorTree behaviorTree { get; private set; }
         private bool needFire;
         private bool needShockwave;
+        private bool needMine;
 
         public Dictionary<int, EnemyMoveData> enemyMoveData { get; set; }
         public int lastIndex { get; set; }
@@ -60,7 +61,7 @@ namespace EnterpriseTeam
 
             UpdateBlackboard();
             float targetOrient = rotation;
-            return new InputData(1, targetOrient, needFire, false, needShockwave);
+            return new InputData(1, targetOrient, needFire, needMine, needShockwave);
         }
 
         public void UpdateBlackboard()
@@ -88,6 +89,11 @@ namespace EnterpriseTeam
         public void GoToNearNeutralWaypoint(float angle)
         {
             rotation = angle;
+        }
+
+        public void POSERMINE()
+        {
+            needMine = true;
         }
     }
 }
