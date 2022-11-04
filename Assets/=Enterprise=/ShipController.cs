@@ -33,6 +33,7 @@ namespace EnterpriseTeam
         public BehaviorTree behaviorTree { get; private set; }
         private bool needFire;
         private bool needShockwave;
+        private bool needMine;
 
         public Dictionary<int, EnemyMoveData> enemyMoveData { get; set; }
         public int lastIndex { get; set; }
@@ -60,7 +61,7 @@ namespace EnterpriseTeam
 
             UpdateBlackboard();
             float targetOrient = rotation;
-            return new InputData(1, targetOrient, needFire, false, needShockwave);
+            return new InputData(1, targetOrient, needFire, needMine, needShockwave);
         }
 
         public void UpdateBlackboard()
@@ -72,6 +73,12 @@ namespace EnterpriseTeam
             }
             behaviorTree.SetVariableValue("EnergyCurrent", view.Energy);
             //SET VARIABLE SHOOT
+            for (int i = 0; i < Data.Mines.Count; i++)
+            {
+                if (AimingHelpers.CanHit(view, Data.Mines[i].Position, 1) && Vector2.Distance(view.Position, Data.Mines[i].Position) < (float)behaviorTree.GetVariable("MineShootDist").GetValue())
+                    behaviorTree.SetVariableValue("CanHit", true);
+            }
+
             if (AimingHelpers.CanHit(view, OtherSpaceship.Position, 15.0f))
                 behaviorTree.SetVariableValue("CanHit", true);
             else
@@ -94,6 +101,11 @@ namespace EnterpriseTeam
         public void GoToNearNeutralWaypoint(float angle)
         {
             rotation = angle;
+        }
+
+        public void POSERMINE()
+        {
+            needMine = true;
         }
     }
 }
